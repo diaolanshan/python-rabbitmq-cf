@@ -16,8 +16,8 @@
         <entry file="file://$PROJECT_DIR$/python-amqp-rabbitmq-cf/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="694">
-                <caret line="97" column="40" lean-forward="false" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+              <first_editor relative-caret-position="496">
+                <caret line="97" column="128" lean-forward="false" selection-start-line="97" selection-start-column="128" selection-end-line="97" selection-end-column="128" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -563,8 +563,8 @@
     <entry file="file://$PROJECT_DIR$/python-amqp-rabbitmq-cf/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="694">
-            <caret line="97" column="40" lean-forward="false" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+          <first_editor relative-caret-position="496">
+            <caret line="97" column="128" lean-forward="false" selection-start-line="97" selection-start-column="128" selection-end-line="97" selection-end-column="128" />
             <folding />
           </first_editor>
           <second_editor />

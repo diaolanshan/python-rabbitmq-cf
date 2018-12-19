@@ -95,4 +95,4 @@ def subscribe_message(self):
         return False, 0
 ```
 
-the full code can be found in the github
+the full code can be found in the [github](https://github.com/diaolanshan/python-rabbitmq-cf/tree/master/python-amqp-rabbitmq-cf)
