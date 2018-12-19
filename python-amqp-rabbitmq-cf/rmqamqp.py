@@ -44,7 +44,6 @@ class AmqpClient(object):
                                                                            delivery_mode=2),
                                            # 1 means Non-persistent， 2 means Persistent
                                            mandatory=True,
-                                           immediate=True,
                                            # If rabbit don't know how to handle the message, it will return the message to this client.
                                            body=message)
                 print(ret)
