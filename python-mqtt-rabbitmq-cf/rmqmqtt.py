@@ -19,10 +19,12 @@ class MQTTClient():
                 services = vcap_services.keys()
                 for service in services:
                     if 'rabbitmq' in vcap_services[service][0]['tags']:
-                        MQTTClient.mqtt_host = vcap_services[service][0]['credentials']['protocols']['mqtt+ssl']['host']
-                        MQTTClient.mqtt_user = vcap_services[service][0]['credentials']['protocols']['mqtt+ssl']['username']
-                        MQTTClient.mqtt_pass = vcap_services[service][0]['credentials']['protocols']['mqtt+ssl']['password']
-                        MQTTClient.mqtt_port = vcap_services[service][0]['credentials']['protocols']['mqtt+ssl']['port']
+                        MQTTClient.mqtt_host = vcap_services[service][0]['credentials']['protocols']['mqtt']['host']
+                        MQTTClient.mqtt_user = vcap_services[service][0]['credentials']['protocols']['mqtt'][
+                            'username']
+                        MQTTClient.mqtt_pass = vcap_services[service][0]['credentials']['protocols']['mqtt'][
+                            'password']
+                        MQTTClient.mqtt_port = vcap_services[service][0]['credentials']['protocols']['mqtt']['port']
 
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
@@ -46,7 +48,7 @@ class MQTTClient():
         and send the messages to the queue which using the topic key bind to it, in our case, it is the config.mqtt_topic
         '''
         client = paho.Client()
-        client.tls_set(ca_certs='cacrt.crt')
+        # client.tls_set(ca_certs='cacrt.crt')
         client.username_pw_set(MQTTClient.mqtt_user, MQTTClient.mqtt_pass)
         client.on_connect = self.on_connect
         client.on_publish = self.on_publish
@@ -73,7 +75,7 @@ class MQTTClient():
         :return:
         '''
         client = paho.Client()
-        client.tls_set(ca_certs='cacrt.crt')
+        # client.tls_set(ca_certs='cacrt.crt')
         client.username_pw_set(MQTTClient.mqtt_user, MQTTClient.mqtt_pass)
         client.on_connect = self.on_connect
         client.on_message = self.on_message
