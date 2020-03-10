@@ -2,7 +2,7 @@ A *Python* app which targetted to demo how to use the AMQP protocol to connect t
 
 The app use the pika library, so add [pika](https://pika.readthedocs.io/en/stable/) in your *requirements.txt*.
 
-The app also use [Flask](https://flask.palletsprojects.com/en/1.1.x/) to expose a endpoint to trigger the publish/subscribe operation, so finally, your *requirements.txt* will looks like below:
+The app also use [Flask](https://flask.palletsprojects.com/en/1.1.x/) to expose endpoints to trigger the publish/subscribe operation, so finally, your *requirements.txt* will looks like below:
 
 ```yaml
 Flask>0.12.2
@@ -24,7 +24,8 @@ pika>0.11.0
 
 - Restart/Restage the app.
 
-- 
+  
+
 
 **How to test it:**
 
@@ -43,33 +44,33 @@ and check the app log for more information after you triggered the urls above.
 
 ```python
 exchange_name = "com.bosch.de.bics.demo.exchange"
-    queue_name = "com.bosch.de.bics.demo.queue"
-    routing_key = "com.bosch.de.bics.demo.routingKey"
+queue_name = "com.bosch.de.bics.demo.queue"
+routing_key = "com.bosch.de.bics.demo.routingKey"
 
-    def __init__(self):
-        try:
-            vcap_services = json.loads(os.environ['VCAP_SERVICES'])
-            if vcap_services != None:
-                for service in vcap_services.keys():
-                    if 'rabbitmq' in vcap_services[service][0]['tags']:
-                        # Use the first 'rabbitmq' service.
-                        uri = vcap_services[service][0]['credentials']['protocols']['amqp']['uri']
-                        break
+def __init__(self):
+    try:
+        vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+        if vcap_services != None:
+            for service in vcap_services.keys():
+                if 'rabbitmq' in vcap_services[service][0]['tags']:
+                    # Use the first 'rabbitmq' service.
+                    uri = vcap_services[service][0]['credentials']['protocols']['amqp']['uri']
+                    break
 
-            connectionParameters = pika.URLParameters(uri + '?retry_delay=1&connection_attempts=3')
-            connection = pika.BlockingConnection(connectionParameters)
-            AmqpClient.channel = connection.channel()
-            # AmqpClient.channel.confirm_delivery()
-            AmqpClient.channel.exchange_declare(exchange=AmqpClient.exchange_name, durable=True,
-                                                exchange_type='direct')
-            AmqpClient.queue = AmqpClient.channel.queue_declare(queue=AmqpClient.queue_name, durable=False)
-            AmqpClient.channel.queue_bind(exchange=AmqpClient.exchange_name, queue=AmqpClient.queue_name,
-                                          routing_key=AmqpClient.routing_key)
-            print('Connect to the rabbitmq successfully.')
+                    connectionParameters = pika.URLParameters(uri + '?retry_delay=1&connection_attempts=3')
+                    connection = pika.BlockingConnection(connectionParameters)
+                    AmqpClient.channel = connection.channel()
+                    # AmqpClient.channel.confirm_delivery()
+                    AmqpClient.channel.exchange_declare(exchange=AmqpClient.exchange_name, durable=True,
+                                                        exchange_type='direct')
+                    AmqpClient.queue = AmqpClient.channel.queue_declare(queue=AmqpClient.queue_name, durable=False)
+                    AmqpClient.channel.queue_bind(exchange=AmqpClient.exchange_name, queue=AmqpClient.queue_name,
+                                                  routing_key=AmqpClient.routing_key)
+                    print('Connect to the rabbitmq successfully.')
 
-        except UnboundLocalError as e:
-            print('Probably no rabbitmq service been binded to the app ?')
-            raise Exception("Can not setup connection to rabbitmq, because: ".format(e.message))
+    except UnboundLocalError as e:
+        print('Probably no rabbitmq service been binded to the app ?')
+        raise Exception("Can not setup connection to rabbitmq, becaus".format(e.message))
 ```
 
 **Publish message:**
@@ -88,8 +89,8 @@ def publish_message(self, *args):
             self.channel.add_on_return_callback(on_message_rejected)
             print("Message published to message broker successfully.")
             return True
-        except Exception as e:
-            raise e
+    except Exception as e:
+        raise e
 ```
 
 **subscribe message:**
@@ -112,8 +113,8 @@ def subscribe_message(self):
                     print('%s messages received from borker.' % (message_consumed))
 
                     return True, message_consumed
-                except Exception as e:
-                    return False, 0
+     except Exception as e:
+        return False, 0
 ```
 
 Alternatively,  if you want to subscribe just one message from the queue, call *subscribe_one_message* which also in the AmqpClient class.
