@@ -6,13 +6,13 @@ import json
 def on_message_rejected(channel, method, properties, body):
     print('Message %s been rejected', body)
 
+
 class AmqpClient(object):
     exchange_name = "com.bosch.de.bics.demo.exchange"
     queue_name = "com.bosch.de.bics.demo.queue"
     routing_key = "com.bosch.de.bics.demo.routingKey"
 
     def __init__(self):
-        print('Init been called ...')
         try:
             vcap_services = json.loads(os.environ['VCAP_SERVICES'])
             if vcap_services != None:
@@ -21,37 +21,38 @@ class AmqpClient(object):
                         # Use the first 'rabbitmq' service.
                         uri = vcap_services[service][0]['credentials']['protocols']['amqp']['uri']
                         break
-        except Exception as e:
-            print('Probablly no rabbitmq service been binded to the app ?')
 
-        connectionParameters = pika.URLParameters(uri + '?retry_delay=1&connection_attempts=3')
-        connection = pika.BlockingConnection(connectionParameters)
-        AmqpClient.channel = connection.channel()
-        #AmqpClient.channel.confirm_delivery()
-        AmqpClient.channel.exchange_declare(exchange=AmqpClient.exchange_name, durable=True,
-                                            exchange_type='direct')
-        AmqpClient.queue = AmqpClient.channel.queue_declare(queue=AmqpClient.queue_name, durable=False)
-        AmqpClient.channel.queue_bind(exchange=AmqpClient.exchange_name, queue=AmqpClient.queue_name,
-                                      routing_key=AmqpClient.routing_key)
-        print('Connection to the rabbitmq successfully.')
+            connectionParameters = pika.URLParameters(uri + '?retry_delay=1&connection_attempts=3')
+            connection = pika.BlockingConnection(connectionParameters)
+            AmqpClient.channel = connection.channel()
+            # AmqpClient.channel.confirm_delivery()
+            AmqpClient.channel.exchange_declare(exchange=AmqpClient.exchange_name, durable=True,
+                                                exchange_type='direct')
+            AmqpClient.queue = AmqpClient.channel.queue_declare(queue=AmqpClient.queue_name, durable=False)
+            AmqpClient.channel.queue_bind(exchange=AmqpClient.exchange_name, queue=AmqpClient.queue_name,
+                                          routing_key=AmqpClient.routing_key)
+            print('Connect to the rabbitmq successfully.')
+
+        except UnboundLocalError as e:
+            print('Probably no rabbitmq service been binded to the app ?')
+            raise Exception("Can not setup connection to rabbitmq, because: ".format(e.message))
 
     def publish_message(self, *args):
         try:
             for message in args:
                 ret = self.channel.basic_publish(exchange=AmqpClient.exchange_name,
-                                           routing_key=AmqpClient.routing_key,
-                                           properties=pika.BasicProperties(content_type='text/plain',
-                                                                           delivery_mode=2),
-                                           # 1 means Non-persistent， 2 means Persistent
-                                           mandatory=True,
-                                           # If rabbit don't know how to handle the message, it will return the message to this client.
-                                           body=message)
-                print(ret)
+                                                 routing_key=AmqpClient.routing_key,
+                                                 properties=pika.BasicProperties(content_type='text/plain',
+                                                                                 delivery_mode=2),
+                                                 # 1 means Non-persistent， 2 means Persistent
+                                                 mandatory=True,
+                                                 # If rabbit don't know how to handle the message, it will return the message to this client.
+                                                 body=message)
                 self.channel.add_on_return_callback(on_message_rejected)
                 print("Message published to message broker successfully.")
             return True
         except Exception as e:
-            return False
+            raise e
 
     def subscribe_message(self):
         '''
@@ -91,7 +92,6 @@ class AmqpClient(object):
                 print('No message in the specific queue')
                 return False, 'None'
         except Exception as e:
-            print(e)
             return False, 'None'
 
     def on_message(self, channel, method_frame, header_frame, body):
