@@ -2,7 +2,7 @@ A *Python* app which targetted to demo how to use the MQTT protocol to connect t
 
 The app use the paho-mqtt library, so add paho-mqtt(https://www.eclipse.org/paho/) in your *requirements.txt*.
 
-The app also use [Flask](https://flask.palletsprojects.com/en/1.1.x/) to expose a endpoint to trigger the publish/subscribe operation, so finally, your *requirements.txt* will looks like below:
+The app also use [Flask](https://flask.palletsprojects.com/en/1.1.x/) to expose endpoints to trigger the publish/subscribe operation, so finally, your *requirements.txt* will looks like below:
 
 ```yaml
 Flask==0.12.2
